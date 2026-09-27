@@ -70,7 +70,7 @@ export const Hero: React.FC<HeroProps> = ({ onTriggerExperience }) => {
             </div>
 
             {/* Monumental Editorial Headline */}
-            <h1 className="font-serif text-5xl sm:text-7xl md:text-8xl xl:text-[6.8rem] font-bold text-white tracking-tighter leading-[0.93] mb-6">
+            <h1 className="font-serif text-[3.5rem] sm:text-7xl md:text-8xl xl:text-[6.8rem] font-bold text-white tracking-tighter leading-[0.93] mb-6">
               {sections.hero.headingLine1}
               <span className="block text-zinc-300 italic font-normal tracking-tight mt-1">
                 {sections.hero.headingLine2}
