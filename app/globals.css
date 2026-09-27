@@ -13,16 +13,18 @@
 
   html {
     scroll-behavior: smooth;
-    background-color: #0a0a0a;
+    scroll-padding-top: 80px;
+    background-color: #000000;
     color: #ededed;
   }
 
   body {
-    background-color: #0a0a0a;
+    background-color: #000000;
     color: #ededed;
     min-height: 100vh;
     min-height: 100dvh;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     font-family: var(--font-sans);
   }
 

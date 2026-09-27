@@ -184,7 +184,11 @@ export const Hero: React.FC<HeroProps> = ({ onTriggerExperience }) => {
             <span>ABDULLAH AL MARUF</span>
           </div>
 
-          <div className="flex flex-col items-center gap-2">
+          <div 
+            onClick={scrollToGallery}
+            className="flex flex-col items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+            title="Scroll to Gallery"
+          >
             <span className="text-zinc-400 font-medium tracking-[0.3em]">
               {sections.hero.scrollText}
             </span>
