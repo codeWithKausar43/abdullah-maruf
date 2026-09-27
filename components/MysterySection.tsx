@@ -33,7 +33,7 @@ export const MysterySection: React.FC<MysterySectionProps> = ({ onTriggerExperie
         <div className="w-full max-w-2xl bg-[#121215] border border-white/10 rounded-sm p-6 sm:p-10 text-left font-mono text-xs sm:text-sm text-zinc-400 mb-12">
           <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6 text-zinc-400">
             <span className="tracking-[0.2em] uppercase text-zinc-300 font-semibold">
-              ARCHIVE CLEARANCE // {personal.location.toUpperCase()}
+              FEATURED STORY // {personal.location.toUpperCase()}
             </span>
             <span>{personal.birthYear}</span>
           </div>
@@ -49,8 +49,8 @@ export const MysterySection: React.FC<MysterySectionProps> = ({ onTriggerExperie
 
           {/* Minimal line pulse */}
           <div className="mt-8 pt-4 border-t border-white/5 flex items-center justify-between text-[11px] text-zinc-500">
-            <span>AUDITORY VOLTAGE: HIGH</span>
-            <span>STATUS: ARMED</span>
+            <span>SOUND SYSTEM: ACTIVE</span>
+            <span>STATUS: READY</span>
           </div>
         </div>
 

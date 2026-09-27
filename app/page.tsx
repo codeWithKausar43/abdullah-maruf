@@ -5,64 +5,49 @@ import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { Profile } from "@/components/Profile";
 import { Gallery } from "@/components/Gallery";
-import { MysterySection } from "@/components/MysterySection";
 import { InteractiveSection } from "@/components/InteractiveSection";
 import { FinalReveal } from "@/components/FinalReveal";
 import { ImmersiveExperience } from "@/components/ImmersiveExperience";
-import { Aftermath } from "@/components/Aftermath";
 import { siteConfig } from "@/config/site";
+import { audioEngine } from "@/components/audio-engine";
 
 export default function Home() {
-  const [mounted, setMounted] = useState(false);
-  const [viewState, setViewState] = useState<"landing" | "immersive" | "aftermath">("landing");
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [viewState, setViewState] = useState<"landing" | "immersive">("landing");
 
   const handleTriggerExperience = () => {
+    // Start audio immediately in the user gesture handler
+    audioEngine.play(siteConfig.media.audioPath, siteConfig.media.audioVolume);
     setViewState("immersive");
   };
 
   const handleExitExperience = () => {
-    setViewState("aftermath");
-  };
-
-  const handleReturnToSite = () => {
     setViewState("landing");
   };
 
-  if (!mounted) {
-    return <main className="min-h-screen bg-[#0a0a0a]" />;
-  }
-
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-[#ededed] relative">
-      {/* 1. Contemporary Luxury Landing Page State */}
+    <main className="min-h-screen bg-[#08080a] text-[#ededed] relative">
+      {/* 1. Landing Page State: Normal site content */}
       {viewState === "landing" && (
         <div className="w-full flex flex-col">
-          {/* Top Luxury Navbar */}
+          {/* Top Navbar */}
           <Navbar onTriggerExperience={handleTriggerExperience} />
 
-          {/* Section 1: Hero */}
+          {/* Section 1: Hero with Cinematic Animated Background */}
           <Hero onTriggerExperience={handleTriggerExperience} />
 
-          {/* Section 2: Selected Works / Curated Gallery */}
+          {/* Section 2: Selected Works / Gallery */}
           <Gallery onTriggerExperience={handleTriggerExperience} />
 
-          {/* Section 3: Profile & Identity Monograph */}
+          {/* Section 3: Profile & Story */}
           <Profile onTriggerExperience={handleTriggerExperience} />
 
-          {/* Section 4: The Mystery / Curatorial Warning */}
-          <MysterySection onTriggerExperience={handleTriggerExperience} />
-
-          {/* Section 5: Experimental Harmonic Calibrator */}
+          {/* Section 4: Sound Frequency Tuner */}
           <InteractiveSection onTriggerExperience={handleTriggerExperience} />
 
-          {/* Section 6: Final Climax / Resonance Point */}
+          {/* Section 5: Fullscreen Showcase Launch */}
           <FinalReveal onTriggerExperience={handleTriggerExperience} />
 
-          {/* High-End KEXART Style Client Footer (Max-Width 1400px, NO EMOJIS, NO ICONS) */}
+          {/* Client Footer */}
           <footer className="w-full bg-[#070709] border-t border-white/5 py-20">
             <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 pb-16 border-b border-white/5">
@@ -77,7 +62,7 @@ export default function Home() {
                     {siteConfig.personal.statement}
                   </p>
                   <p className="text-[11px] tracking-[0.2em] uppercase text-zinc-500 font-mono">
-                    ORIGIN: <span className="text-zinc-300">{siteConfig.personal.location}</span>
+                    HOMETOWN: <span className="text-zinc-300">{siteConfig.personal.location}</span>
                   </p>
                 </div>
 
@@ -100,13 +85,13 @@ export default function Home() {
                   </ul>
                 </div>
 
-                {/* Identity Intel & Trigger */}
+                {/* Info & Trigger */}
                 <div>
                   <h3 className="text-xs tracking-[0.25em] uppercase text-zinc-500 mb-6 font-medium">
-                    ARCHIVE INTEL
+                    FEATURED SHOT
                   </h3>
                   <p className="text-xs text-zinc-400 font-light leading-relaxed mb-4">
-                    Inception: {siteConfig.personal.birthDate}
+                    Birthday: {siteConfig.personal.birthDate}
                   </p>
                   <p className="text-xs text-zinc-400 font-light leading-relaxed mb-6">
                     Status: {siteConfig.personal.relationshipStatus}
@@ -115,7 +100,7 @@ export default function Home() {
                     onClick={handleTriggerExperience}
                     className="text-xs tracking-[0.2em] uppercase text-white hover:text-zinc-400 transition-colors font-medium border-b border-white/40 pb-1 cursor-pointer"
                   >
-                    ACCESS SENSORY ARCHIVE
+                    VIEW VALLEY HORIZON
                   </button>
                 </div>
               </div>
@@ -126,7 +111,7 @@ export default function Home() {
                   (C) {new Date().getFullYear()} {siteConfig.personal.name}. All rights reserved.
                 </p>
                 <p className="text-[11px] tracking-[0.2em] uppercase">
-                  CONTEMPORARY VISUAL MONOGRAPH
+                  PHOTOGRAPHY ARCHIVE
                 </p>
               </div>
             </div>
@@ -134,17 +119,9 @@ export default function Home() {
         </div>
       )}
 
-      {/* 2. Fullscreen Surprise Party Mode */}
+      {/* 2. Fullscreen Experience: Completely hides normal website content */}
       {viewState === "immersive" && (
         <ImmersiveExperience onExit={handleExitExperience} />
-      )}
-
-      {/* 3. Post-Experience Aftermath State */}
-      {viewState === "aftermath" && (
-        <Aftermath
-          onReenter={handleTriggerExperience}
-          onReturnToSite={handleReturnToSite}
-        />
       )}
     </main>
   );

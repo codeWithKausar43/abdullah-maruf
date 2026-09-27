@@ -42,7 +42,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onTriggerExperience }) => {
             onClick={onTriggerExperience}
             className="px-6 py-2.5 text-xs tracking-[0.2em] uppercase rounded-full border border-white/20 text-white hover:bg-white hover:text-black transition-all duration-300 font-medium cursor-pointer"
           >
-            DISCOVER
+            VALLEY HORIZON
           </button>
         </div>
 
@@ -79,7 +79,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onTriggerExperience }) => {
                 }}
                 className="w-full text-center px-6 py-3 text-xs tracking-[0.2em] uppercase rounded-full bg-white text-black font-medium"
               >
-                DISCOVER WORK
+                VALLEY HORIZON
               </button>
             </li>
           </ul>

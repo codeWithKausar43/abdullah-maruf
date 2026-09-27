@@ -1,11 +1,7 @@
 /**
  * =======================================================================
  * CENTRAL SITE CONFIGURATION — ABDULLAH AL MARUF
- * Contemporary Visual Portfolio & Art Direction (Inspired by KEXART)
- * =======================================================================
- * NO EMOJIS OR CORNY ICONS.
- * Max content width: 1400px.
- * Easily replace images, audio, texts, and labels below.
+ * Personal Portfolio & Visual Archive
  * =======================================================================
  */
 
@@ -103,150 +99,149 @@ export interface SiteConfig {
 export const siteConfig: SiteConfig = {
   personal: {
     name: "Abdullah Al Maruf",
-    profession: "Contemporary Visuals & Art Direction",
-    location: "Jamalpur Sadar Upazila",
+    profession: "Student & Photography Enthusiast",
+    location: "Jamalpur Sadar, Bangladesh",
     origin: "Jamalpur, Bangladesh",
     birthDate: "August 3, 2009",
     birthYear: "2009",
     relationshipStatus: "Single",
-    statement: "Exploring the boundaries of perception, light, and stillness through curated contemporary portraiture and environmental studies.",
-    monograph: "Based in Jamalpur Sadar Upazila, Abdullah Al Maruf approaches visual storytelling through a refined lens of natural atmosphere, quiet contemplation, and architectural presence.",
+    statement: "A personal collection of photos and moments from trips, everyday life, and viewpoints around Jamalpur and beyond.",
+    monograph: "Born in 2009 in Jamalpur Sadar, Bangladesh, Abdullah Al Maruf shares his favorite photography, quiet viewpoints, and memories captured with friends and family.",
   },
 
   media: {
     heroImage: "/images/maruf-4.jpg",
     profileImage: "/images/maruf-2.jpg",
-    prankImage: "/images/maruf-1.jpg",
+    prankImage: "/images/maruf-3.jpg", // Valley Horizon
     audioPath: "/audio/prank.mp3",
     audioVolume: 1.0,
     archiveGallery: [
       {
         id: "01",
         url: "/images/maruf-1.jpg",
-        title: "Highland Solitude",
-        medium: "Natural Shade on Location",
+        title: "Highland View",
+        medium: "Hilltop / Outdoors",
         year: "2024",
-        category: "Study 01",
+        category: "Outdoors",
       },
       {
         id: "02",
         url: "/images/maruf-2.jpg",
-        title: "Grandstand Perspective",
-        medium: "Architectural Viewpoint",
+        title: "Grandstand View",
+        medium: "Stadium Stands",
         year: "2025",
-        category: "Study 02",
+        category: "Travel",
       },
       {
         id: "03",
         url: "/images/maruf-3.jpg",
         title: "Valley Horizon",
-        medium: "Atmospheric Elevation",
+        medium: "Scenic Viewpoint",
         year: "2025",
-        category: "Study 03",
+        category: "Featured",
       },
       {
         id: "04",
         url: "/images/maruf-4.jpg",
-        title: "Formal Vesture",
-        medium: "Monochrome Mirror Composition",
+        title: "Formal Portrait",
+        medium: "Suit & Tie",
         year: "2025",
-        category: "Study 04",
+        category: "Portrait",
       },
     ],
   },
 
   navigation: [
     { label: "Home", href: "#home" },
-    { label: "Works", href: "#works" },
-    { label: "Profile", href: "#profile" },
-    { label: "Archive", href: "#archive" },
-    { label: "Dialogue", href: "#dialogue" },
-    { label: "Monograph", href: "#monograph" },
+    { label: "Gallery", href: "#works" },
+    { label: "About", href: "#profile" },
+    { label: "Audio", href: "#dialogue" },
+    { label: "Showcase", href: "#monograph" },
   ],
 
   sections: {
     hero: {
-      category: "CONTEMPORARY PORTFOLIO",
+      category: "PERSONAL PORTFOLIO",
       headingLine1: "Abdullah Al",
       headingLine2: "Maruf",
-      subtitle: "Exploring the tension between silence and sound, form and presence through visceral visual archives.",
-      buttonPrimary: "EXPLORE ARCHIVE",
-      buttonSecondary: "DO NOT OPEN",
-      scrollText: "SCROLL TO DISCOVER",
+      subtitle: "Moments, viewpoints, and personal photography from Jamalpur, Bangladesh.",
+      buttonPrimary: "EXPLORE GALLERY",
+      buttonSecondary: "VALLEY HORIZON",
+      scrollText: "SCROLL TO EXPLORE",
     },
 
     profile: {
-      category: "THE PROFILE",
-      title: "Identity & Origin",
-      subtitle: "A biographical monograph curated from personal archives.",
+      category: "ABOUT ME",
+      title: "Abdullah Al Maruf",
+      subtitle: "A quick introduction to who I am and what I enjoy.",
       biographyParagraphs: [
-        "Born on August 3, 2009 in Jamalpur Sadar Upazila, Abdullah Al Maruf has developed a distinctive visual presence defined by poise, deliberate framing, and minimalist restraint.",
-        "Operating on an independent individual trajectory (Single), his work embraces quiet confidence across natural highlands, open-air stadia, and formal monochrome portraiture.",
+        "I was born on August 3, 2009, in Jamalpur Sadar, Bangladesh. Most of my days are spent studying, hanging out outdoors, and capturing photos whenever I travel.",
+        "From hilltop viewpoints and stadiums to candid snapshots with friends, I love keeping a visual record of life and places I visit.",
       ],
       curatedFacts: [
         {
           label: "Full Name",
           value: "Abdullah Al Maruf",
-          note: "Designated Subject",
+          note: "Photographer & Student",
         },
         {
-          label: "Geographic Origin",
-          value: "Jamalpur Sadar Upazila",
+          label: "Hometown",
+          value: "Jamalpur Sadar",
           note: "Mymensingh, Bangladesh",
         },
         {
-          label: "Date of Inception",
-          value: "August 3, 2009",
-          note: "Summer Alignment",
+          label: "Body Count",
+          value: "10",
+          note: "Confirmed",
         },
         {
-          label: "Relationship Status",
+          label: "Status",
           value: "Single",
-          note: "Independent Focus",
+          note: "Living life & learning",
         },
       ],
     },
 
     works: {
-      category: "CURATED COLLECTION",
-      title: "Selected Works",
-      subtitle: "A four-part retrospective capturing distinct spatial and personal moments.",
-      buttonViewAll: "VIEW COLLECTION",
+      category: "PHOTO GALLERY",
+      title: "Captured Moments",
+      subtitle: "Four of my favorite photos taken in different settings and locations.",
+      buttonViewAll: "EXPLORE FULL ARCHIVE",
     },
 
     mystery: {
-      category: "THE THRESHOLD",
-      title: "Curatorial Warning",
-      statement: "Certain archives are constructed to remain intact. Engaging the trigger below disengages all auditory dampeners.",
+      category: "FEATURED SPOTLIGHT",
+      title: "The Valley Horizon",
+      statement: "One of my absolute favorite shots — standing at the railing overlooking the green hills under the open sky. Turn up your sound before opening.",
       manifesto: [
-        "Registry verification confirmed for Jamalpur node.",
-        "Acoustic frequency calibrated for maximum resonance.",
-        "Visual feedback loop prepared for instant transition.",
+        "Captured on location overlooking the rolling hills.",
+        "High-energy sound effects and visual rhythms ready.",
+        "Click below to experience the photo full-screen.",
       ],
-      buttonTrigger: "PROCEED REGARDLESS",
+      buttonTrigger: "OPEN VALLEY HORIZON",
     },
 
     interactive: {
-      category: "EXPERIMENTAL FREQUENCY",
-      title: "Harmonic Calibrator",
-      subtitle: "Adjust the sensory slider to calibrate the frequency matrix.",
-      frequencyPrompt: "DESIRED HARMONIC: 140.00 MHZ",
-      buttonTrigger: "ENGAGE FREQUENCY",
+      category: "SOUND & VISUALS",
+      title: "Audio Frequency",
+      subtitle: "Slide through the frequencies toward 140 MHz to balance the sound levels before launching.",
+      frequencyPrompt: "DESIRED FREQUENCY: 140.00 MHZ",
+      buttonTrigger: "START THE EXPERIENCE",
     },
 
     finalReveal: {
-      category: "FINAL CLIMAX",
-      title: "The Point of Resonance",
-      statement: "A single interaction dissolves the editorial gallery into full sensory immersion. Sound, illumination, and motion will immediately take over.",
-      buttonTrigger: "INITIATE TRANSMISSION",
+      category: "THE SHOWCASE",
+      title: "Ready for the Real Vibe?",
+      statement: "Hit the button to launch the full-screen visual and music showcase. Turn up your volume for the best experience!",
+      buttonTrigger: "LAUNCH FULLSCREEN NOW",
     },
 
     aftermath: {
-      badge: "TRANSMISSION COMPLETE",
-      title: "Session Concluded",
-      description: "You have experienced the full-immersion party showcase of Abdullah Al Maruf.",
-      buttonReplay: "REPLAY EXPERIENCE",
-      buttonReturn: "RETURN TO PORTFOLIO",
+      badge: "SHOWCASE CONCLUDED",
+      title: "Hope You Enjoyed It!",
+      description: "You just experienced the full-screen music and lighting showcase of Abdullah Al Maruf's Valley Horizon.",
+      buttonReplay: "PLAY AGAIN",
+      buttonReturn: "BACK TO PORTFOLIO",
     },
   },
 

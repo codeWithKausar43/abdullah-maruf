@@ -43,7 +43,7 @@ export const InteractiveSection: React.FC<InteractiveSectionProps> = ({ onTrigge
         {/* Minimalist Gallery Tuner Console */}
         <div className="w-full max-w-2xl bg-[#121215] border border-white/10 rounded-sm p-8 sm:p-12 flex flex-col items-center shadow-2xl">
           <div className="text-[10px] tracking-[0.3em] uppercase text-zinc-500 font-medium mb-3">
-            CARRIER RESONANCE
+            FREQUENCY LEVEL
           </div>
 
           <div className="text-5xl sm:text-7xl font-serif font-bold text-white tracking-tight flex items-baseline gap-2 mb-2">
@@ -55,7 +55,7 @@ export const InteractiveSection: React.FC<InteractiveSectionProps> = ({ onTrigge
 
           <p className="text-xs font-mono tracking-wider uppercase text-zinc-400 mb-8">
             {isLocked
-              ? `HARMONIC ALIGNED // ${personal.name.toUpperCase()}`
+              ? `FREQUENCY TUNED // READY TO PLAY`
               : sections.interactive.frequencyPrompt}
           </p>
 

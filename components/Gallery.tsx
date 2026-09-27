@@ -14,9 +14,17 @@ export const Gallery: React.FC<GalleryProps> = ({ onTriggerExperience }) => {
 
   const categories = ["All", "Highland", "Grandstand", "Valley", "Formal"];
   const works = media.archiveGallery;
+  const filteredWorks =
+    activeFilter === "All"
+      ? works
+      : works.filter(
+          (w) =>
+            w.title.toLowerCase().includes(activeFilter.toLowerCase()) ||
+            w.category.toLowerCase().includes(activeFilter.toLowerCase())
+        );
 
   return (
-    <section id="works" className="py-28 sm:py-36 bg-[#0a0a0a]">
+    <section id="works" className="py-28 sm:py-36 bg-[#08080a]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12">
         {/* Section Heading */}
         <div className="text-center mb-16">
@@ -32,7 +40,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onTriggerExperience }) => {
           </p>
         </div>
 
-        {/* Minimal Category Filter Tabs */}
+        {/* Category Filter Tabs */}
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-16">
           {categories.map((cat) => (
             <button
@@ -49,9 +57,9 @@ export const Gallery: React.FC<GalleryProps> = ({ onTriggerExperience }) => {
           ))}
         </div>
 
-        {/* Selected Works Grid (All 4 Real Photos) */}
+        {/* Selected Works Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {works.map((item, idx) => (
+          {filteredWorks.map((item, idx) => (
             <div
               key={item.id}
               onClick={onTriggerExperience}
@@ -70,7 +78,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onTriggerExperience }) => {
                 {/* Subtle Hover Veil */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 backdrop-blur-[2px] transition-all duration-500 flex items-center justify-center p-4">
                   <span className="border border-white/40 bg-black/60 backdrop-blur-md text-white px-6 py-3 text-[11px] tracking-[0.2em] uppercase rounded-full font-medium">
-                    EXPLORE WORK
+                    VIEW PHOTO
                   </span>
                 </div>
 

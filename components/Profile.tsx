@@ -76,7 +76,7 @@ export const Profile: React.FC<ProfileProps> = ({ onTriggerExperience }) => {
                 onClick={onTriggerExperience}
                 className="px-6 py-3 rounded-full border border-white/20 text-white text-xs tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all font-medium cursor-pointer"
               >
-                ACCESS DOSSIER
+                VIEW PHOTO SHOWCASE
               </button>
             </div>
           </div>

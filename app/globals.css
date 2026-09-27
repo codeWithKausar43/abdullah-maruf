@@ -26,7 +26,10 @@
     font-family: var(--font-sans);
   }
 
-  h1, h2, h3, .font-serif {
+  h1,
+  h2,
+  h3,
+  .font-serif {
     font-family: var(--font-serif);
   }
 }
@@ -35,13 +38,16 @@
 ::-webkit-scrollbar {
   width: 5px;
 }
+
 ::-webkit-scrollbar-track {
   background: #0a0a0a;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #262626;
   border-radius: 2px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #525252;
 }
@@ -51,58 +57,152 @@
    ======================================================================= */
 
 @keyframes multiLaser1 {
-  0% { transform: rotate(-65deg) scaleY(1); opacity: 0.8; }
-  50% { transform: rotate(65deg) scaleY(1.4); opacity: 1; }
-  100% { transform: rotate(-65deg) scaleY(1); opacity: 0.8; }
+  0% {
+    transform: rotate(-65deg) scaleY(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: rotate(65deg) scaleY(1.4);
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(-65deg) scaleY(1);
+    opacity: 0.8;
+  }
 }
 
 @keyframes multiLaser2 {
-  0% { transform: rotate(70deg) scaleY(1.2); opacity: 0.9; }
-  50% { transform: rotate(-50deg) scaleY(0.9); opacity: 0.6; }
-  100% { transform: rotate(70deg) scaleY(1.2); opacity: 0.9; }
+  0% {
+    transform: rotate(70deg) scaleY(1.2);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: rotate(-50deg) scaleY(0.9);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: rotate(70deg) scaleY(1.2);
+    opacity: 0.9;
+  }
 }
 
 @keyframes multiLaser3 {
-  0% { transform: rotate(-25deg) translateY(-20%); opacity: 0.7; }
-  50% { transform: rotate(45deg) translateY(20%); opacity: 1; }
-  100% { transform: rotate(-25deg) translateY(-20%); opacity: 0.7; }
+  0% {
+    transform: rotate(-25deg) translateY(-20%);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: rotate(45deg) translateY(20%);
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(-25deg) translateY(-20%);
+    opacity: 0.7;
+  }
 }
 
 @keyframes discoSweep {
-  0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(180deg) scale(1.25); }
-  100% { transform: rotate(360deg) scale(1); }
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(1.25);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
 }
 
 @keyframes bassDropShake {
-  0% { transform: scale(1) translate(0, 0); }
-  10% { transform: scale(1.08) translate(-6px, 4px) rotate(-1deg); }
-  25% { transform: scale(1.12) translate(6px, -4px) rotate(1.5deg); }
-  40% { transform: scale(1.06) translate(-4px, -3px) rotate(-0.5deg); }
-  55% { transform: scale(1.1) translate(4px, 3px) rotate(1deg); }
-  75% { transform: scale(1.03) translate(-2px, 1px); }
-  100% { transform: scale(1) translate(0, 0); }
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+
+  10% {
+    transform: scale(1.08) translate(-6px, 4px) rotate(-1deg);
+  }
+
+  25% {
+    transform: scale(1.12) translate(6px, -4px) rotate(1.5deg);
+  }
+
+  40% {
+    transform: scale(1.06) translate(-4px, -3px) rotate(-0.5deg);
+  }
+
+  55% {
+    transform: scale(1.1) translate(4px, 3px) rotate(1deg);
+  }
+
+  75% {
+    transform: scale(1.03) translate(-2px, 1px);
+  }
+
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
 }
 
 @keyframes hyperStrobe {
-  0% { opacity: 0.95; }
-  20% { opacity: 0.1; }
-  40% { opacity: 0.9; }
-  60% { opacity: 0.05; }
-  80% { opacity: 0.85; }
-  100% { opacity: 0.95; }
+  0% {
+    opacity: 0.95;
+  }
+
+  20% {
+    opacity: 0.1;
+  }
+
+  40% {
+    opacity: 0.9;
+  }
+
+  60% {
+    opacity: 0.05;
+  }
+
+  80% {
+    opacity: 0.85;
+  }
+
+  100% {
+    opacity: 0.95;
+  }
 }
 
 @keyframes spotDrift1 {
-  0% { transform: translate(-30%, -20%) scale(1); }
-  50% { transform: translate(40%, 30%) scale(1.5); }
-  100% { transform: translate(-30%, -20%) scale(1); }
+  0% {
+    transform: translate(-30%, -20%) scale(1);
+  }
+
+  50% {
+    transform: translate(40%, 30%) scale(1.5);
+  }
+
+  100% {
+    transform: translate(-30%, -20%) scale(1);
+  }
 }
 
 @keyframes spotDrift2 {
-  0% { transform: translate(40%, 30%) scale(1.3); }
-  50% { transform: translate(-40%, -20%) scale(1); }
-  100% { transform: translate(40%, 30%) scale(1.3); }
+  0% {
+    transform: translate(40%, 30%) scale(1.3);
+  }
+
+  50% {
+    transform: translate(-40%, -20%) scale(1);
+  }
+
+  100% {
+    transform: translate(40%, 30%) scale(1.3);
+  }
 }
 
 .animate-laser-sweep1 {
