@@ -243,3 +243,41 @@
 .screen-click-shock {
   animation: bassDropShake 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
 }
+
+/* Extreme Rapid Multi-Color Rave Strobe */
+@keyframes extremeColorStrobe {
+  0% { background-color: #ff0055; opacity: 0.9; }
+  14% { background-color: #00f0ff; opacity: 0.2; }
+  28% { background-color: #ffee00; opacity: 0.85; }
+  42% { background-color: #39ff14; opacity: 0.15; }
+  56% { background-color: #b026ff; opacity: 0.95; }
+  70% { background-color: #ffffff; opacity: 0.3; }
+  84% { background-color: #ff3b00; opacity: 0.9; }
+  100% { background-color: #ff0055; opacity: 0.9; }
+}
+
+@keyframes ultraBlink {
+  0%, 100% { opacity: 0.95; }
+  50% { opacity: 0.0; }
+}
+
+@keyframes screenVibrate {
+  0% { transform: translate(0, 0) scale(1.02); }
+  20% { transform: translate(-8px, 6px) scale(1.05); }
+  40% { transform: translate(8px, -6px) scale(1.03); }
+  60% { transform: translate(-6px, -4px) scale(1.06); }
+  80% { transform: translate(6px, 4px) scale(1.03); }
+  100% { transform: translate(0, 0) scale(1.02); }
+}
+
+.animate-extreme-strobe {
+  animation: extremeColorStrobe 0.24s infinite steps(2, start);
+}
+
+.animate-ultra-blink {
+  animation: ultraBlink 0.09s infinite linear;
+}
+
+.animate-screen-vibrate {
+  animation: screenVibrate 0.18s infinite ease-in-out;
+}

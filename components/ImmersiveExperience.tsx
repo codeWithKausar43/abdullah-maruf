@@ -17,34 +17,38 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
   // Stage 1: "video", Stage 2: "showcase"
   const [stage, setStage] = useState<"video" | "showcase">("video");
 
-  // Audio-reactive metrics for showcase stage
+  // Audio-reactive & strobe metrics for showcase stage
   const [bassEnergy, setBassEnergy] = useState<number>(0);
-  const [strobeColor, setStrobeColor] = useState<string>("rgba(255, 0, 85, 0.75)");
+  const [isBeatActive, setIsBeatActive] = useState<boolean>(false);
+  const [strobeColor, setStrobeColor] = useState<string>("rgba(255, 0, 85, 0.9)");
   const [flashOverlay, setFlashOverlay] = useState<boolean>(false);
+  const [initialBlast, setInitialBlast] = useState<boolean>(false);
   const [clickCount, setClickCount] = useState<number>(0);
   const [flashingTitle, setFlashingTitle] = useState<string>("GRANDSTAND VIEW // HIGH VOLTAGE");
 
   const djColors = [
-    "rgba(255, 0, 85, 0.85)",   // Hot Neon Magenta
-    "rgba(0, 240, 255, 0.85)",  // Electric Cyan
-    "rgba(255, 238, 0, 0.8)",   // Acid Yellow
-    "rgba(57, 255, 20, 0.8)",   // Laser Green
-    "rgba(176, 38, 255, 0.85)", // Ultraviolet
-    "rgba(255, 107, 53, 0.85)", // Neon Orange
-    "rgba(255, 255, 255, 0.95)", // Strobe White
+    "rgba(255, 0, 85, 0.95)",   // Hot Neon Magenta
+    "rgba(0, 240, 255, 0.95)",  // Electric Cyan
+    "rgba(255, 238, 0, 0.9)",   // Acid Yellow
+    "rgba(57, 255, 20, 0.9)",   // Laser Green
+    "rgba(176, 38, 255, 0.95)", // Ultraviolet
+    "rgba(255, 107, 53, 0.95)", // Neon Orange
+    "rgba(255, 255, 255, 1.0)",  // Strobe White
+    "rgba(0, 255, 204, 0.95)",  // Bright Aqua
+    "rgba(255, 0, 187, 0.95)",  // Vivid Pink
   ];
 
-  // Request fullscreen if supported on user interaction
-  useEffect(() => {
-    const requestFs = async () => {
-      try {
-        const el = document.documentElement as unknown as {
-          requestFullscreen?: () => Promise<void>;
-          webkitRequestFullscreen?: () => Promise<void>;
-          mozRequestFullScreen?: () => Promise<void>;
-          msRequestFullscreen?: () => Promise<void>;
-        };
+  // Helper to maintain fullscreen mode inside the immersive state
+  const requestFs = useCallback(async () => {
+    try {
+      const el = document.documentElement as unknown as {
+        requestFullscreen?: () => Promise<void>;
+        webkitRequestFullscreen?: () => Promise<void>;
+        mozRequestFullScreen?: () => Promise<void>;
+        msRequestFullscreen?: () => Promise<void>;
+      };
 
+      if (!document.fullscreenElement) {
         if (el.requestFullscreen) {
           await el.requestFullscreen();
         } else if (el.webkitRequestFullscreen) {
@@ -54,11 +58,14 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
         } else if (el.msRequestFullscreen) {
           await el.msRequestFullscreen();
         }
-      } catch {
-        // Fallback gracefully
       }
-    };
+    } catch {
+      // Fallback gracefully
+    }
+  }, []);
 
+  // Request fullscreen if supported on user interaction
+  useEffect(() => {
     requestFs();
 
     // Prevent background scrolling
@@ -84,7 +91,7 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = origOverflow;
     };
-  }, [media.audioPath, media.audioVolume, media.grandstandImage]);
+  }, [media.audioPath, media.audioVolume, media.grandstandImage, requestFs]);
 
   // Clean exit handler
   const handleExit = useCallback(() => {
@@ -98,11 +105,12 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
     onExit();
   }, [onExit]);
 
-  // Start video playback as soon as mounted
+  // Start video playback as soon as mounted: COMPLETELY MUTED
   useEffect(() => {
     if (stage === "video" && videoRef.current) {
       videoRef.current.currentTime = 0;
-      videoRef.current.volume = 1.0;
+      videoRef.current.muted = true;
+      videoRef.current.volume = 0;
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) {
         playPromise.catch((err) => {
@@ -114,32 +122,49 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
 
   // Transition handler: Triggered IMMEDIATELY when the video ends completely
   const handleVideoEnd = useCallback(() => {
-    // 1. Immediately switch to showcase stage
+    // 1. Immediately switch to showcase stage with extreme initial shockwave
     setStage("showcase");
+    setInitialBlast(true);
+    setFlashOverlay(true);
+
+    // Initial shock duration
+    setTimeout(() => {
+      setInitialBlast(false);
+      setFlashOverlay(false);
+    }, 2200);
+
+    // Keep user in fullscreen if browser permits
+    requestFs();
 
     // 2. Play the main audio at its configured full playback level
     audioEngine.play(media.audioPath, media.audioVolume ?? 1.0);
-  }, [media.audioPath, media.audioVolume]);
+  }, [media.audioPath, media.audioVolume, requestFs]);
 
   const handleVideoError = useCallback(() => {
     console.warn("Video encountered error, progressing to showcase");
     handleVideoEnd();
   }, [handleVideoEnd]);
 
-  // Reactivity and animation loop during the showcase stage
+  // Audio-reactive loop and high-intensity strobe cycling during showcase stage
   useEffect(() => {
     if (stage !== "showcase") return;
 
     let animId: number;
+    let colorIdx = 0;
+
     const updateAudioReactivity = () => {
       const metrics = audioEngine.getAudioMetrics();
       setBassEnergy(metrics.bass);
+      setIsBeatActive(metrics.isBeat);
 
-      // Trigger instantaneous strobe flash on high bass kick
+      // Rapidly cycle colors synchronized with audio metrics
+      colorIdx = (colorIdx + 1) % djColors.length;
+      setStrobeColor(djColors[colorIdx]);
+
+      // Trigger instantaneous high-intensity strobe flash on beats or high bass
       if (metrics.isBeat) {
-        setStrobeColor(djColors[Math.floor(Math.random() * djColors.length)]);
         setFlashOverlay(true);
-        setTimeout(() => setFlashOverlay(false), 90);
+        setTimeout(() => setFlashOverlay(false), 80);
       }
 
       animId = requestAnimationFrame(updateAudioReactivity);
@@ -149,21 +174,21 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
 
     const titles = [
       "GRANDSTAND VIEW // HIGH VOLTAGE",
-      "ABDULLAH AL MARUF // LIVE SHOWCASE",
+      "MAXIMUM SENSORY ILLUMINATION",
       "FULL FREQUENCY UNLOCKED // 135 BPM",
-      "MAXIMUM PRACTICAL BRIGHTNESS // ACTIVE",
-      "SENSORY LIGHTING // DYNAMIC MATRIX",
+      "OVERWHELMING VISUAL MATRIX",
+      "HIGH-INTENSITY COLOR MATRIX",
     ];
 
     const titleInterval = setInterval(() => {
       setFlashingTitle(titles[Math.floor(Math.random() * titles.length)]);
-    }, 1500);
+    }, 1200);
 
     return () => {
       cancelAnimationFrame(animId);
       clearInterval(titleInterval);
     };
-  }, [stage]);
+  }, [stage, djColors]);
 
   // Click shockwave and bass impact during showcase
   const triggerClickFX = () => {
@@ -185,7 +210,7 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
   };
 
   // Grandstand View image dynamic scale reacting to bass
-  const imageScale = 1.0 + Math.min(0.08, bassEnergy * 0.08);
+  const imageScale = 1.0 + Math.min(0.12, bassEnergy * 0.12);
 
   const grandstandImageSrc = media.grandstandImage || "/images/maruf-2.jpg";
 
@@ -195,14 +220,14 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
       onClick={triggerClickFX}
       className={`fixed inset-0 z-[99999] w-screen h-screen bg-black overflow-hidden select-none cursor-pointer ${
         flashOverlay ? "screen-click-shock" : ""
-      }`}
+      } ${initialBlast || isBeatActive ? "animate-screen-vibrate" : ""}`}
       style={{
         width: "100vw",
         height: "100dvh",
       }}
     >
       {/* ================================================================= */}
-      {/* STAGE 1: FULLSCREEN VIDEO PLAYER                                  */}
+      {/* STAGE 1: FULLSCREEN VIDEO PLAYER (COMPLETELY MUTED)                */}
       {/* ================================================================= */}
       {stage === "video" && (
         <div className="absolute inset-0 z-50 w-full h-full bg-black flex items-center justify-center">
@@ -210,6 +235,7 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
             ref={videoRef}
             autoPlay
             playsInline
+            muted
             onEnded={handleVideoEnd}
             onError={handleVideoError}
             className="w-full h-full object-contain"
@@ -236,10 +262,10 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
       )}
 
       {/* ================================================================= */}
-      {/* STAGE 2: "GRANDSTAND VIEW" SHOWCASE + MAXIMUM LIGHTING EFFECTS    */}
+      {/* STAGE 2: "GRANDSTAND VIEW" SHOWCASE + EXTREME VISUAL EFFECTS      */}
       {/* ================================================================= */}
       <div
-        className={`absolute inset-0 w-full h-full transition-opacity duration-100 ${
+        className={`absolute inset-0 w-full h-full transition-opacity duration-75 ${
           stage === "showcase" ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
@@ -251,7 +277,7 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center filter blur-3xl opacity-50 scale-125 brightness-135"
+            className="object-cover object-center filter blur-3xl opacity-60 scale-125 brightness-150"
           />
         </div>
 
@@ -272,121 +298,136 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
           />
         </div>
 
-        {/* LAYER 3: 360-DEGREE ROTATING DISCO LIGHT BEAM WASH */}
+        {/* LAYER 3: 360-DEGREE ROTATING RAPID DISCO LIGHT BEAM WASH */}
         <div
-          className="absolute inset-[-50%] pointer-events-none animate-disco-sweep opacity-50 mix-blend-screen"
+          className="absolute inset-[-50%] pointer-events-none animate-disco-sweep opacity-65 mix-blend-screen z-20"
           style={{
             background:
-              "conic-gradient(from 0deg, #ff0055, #00f0ff, #ffee00, #39ff14, #b026ff, #ff6b35, #ffffff, #ff0055)",
+              "conic-gradient(from 0deg, #ff0055, #00f0ff, #ffee00, #39ff14, #b026ff, #ff6b35, #ffffff, #00ffcc, #ff0055)",
           }}
         />
 
         {/* LAYER 4: 4 CORNER ROTATING CLUB MOVING-HEAD SPOTLIGHTS */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
           {/* Top-Left Magenta Spotlight */}
-          <div className="absolute -top-24 -left-24 w-[85vw] h-[85vw] rounded-full bg-radial from-[#ff0055]/60 via-[#ff0055]/20 to-transparent blur-3xl animate-spot-1 mix-blend-screen" />
+          <div className="absolute -top-24 -left-24 w-[90vw] h-[90vw] rounded-full bg-radial from-[#ff0055]/75 via-[#ff0055]/25 to-transparent blur-3xl animate-spot-1 mix-blend-screen" />
 
           {/* Top-Right Cyan Spotlight */}
-          <div className="absolute -top-24 -right-24 w-[85vw] h-[85vw] rounded-full bg-radial from-[#00f0ff]/60 via-[#00f0ff]/20 to-transparent blur-3xl animate-spot-2 mix-blend-screen" />
+          <div className="absolute -top-24 -right-24 w-[90vw] h-[90vw] rounded-full bg-radial from-[#00f0ff]/75 via-[#00f0ff]/25 to-transparent blur-3xl animate-spot-2 mix-blend-screen" />
 
           {/* Bottom-Center Acid Green Spotlight */}
-          <div className="absolute -bottom-24 left-1/4 w-[80vw] h-[80vw] rounded-full bg-radial from-[#39ff14]/50 via-transparent to-transparent blur-3xl animate-pulse mix-blend-screen" />
+          <div className="absolute -bottom-24 left-1/4 w-[85vw] h-[85vw] rounded-full bg-radial from-[#39ff14]/65 via-transparent to-transparent blur-3xl animate-pulse mix-blend-screen" />
 
           {/* Center Ultraviolet Aura */}
-          <div className="absolute top-1/3 left-1/3 w-[65vw] h-[65vw] rounded-full bg-radial from-[#b026ff]/55 via-transparent to-transparent blur-3xl animate-pulse mix-blend-screen" />
+          <div className="absolute top-1/3 left-1/3 w-[70vw] h-[70vw] rounded-full bg-radial from-[#b026ff]/70 via-transparent to-transparent blur-3xl animate-pulse mix-blend-screen" />
         </div>
 
         {/* LAYER 5: MULTI-DIRECTIONAL SWEEPING HIGH-INTENSITY LASER BEAMS */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
           {/* Laser 1: Electric Cyan */}
           <div
-            className="absolute -top-[50%] left-[20%] w-[10px] h-[250%] bg-gradient-to-b from-[#00f0ff] via-white to-transparent shadow-[0_0_50px_#00f0ff] animate-laser-sweep1 opacity-90"
+            className="absolute -top-[50%] left-[20%] w-[12px] h-[250%] bg-gradient-to-b from-[#00f0ff] via-white to-transparent shadow-[0_0_60px_#00f0ff] animate-laser-sweep1 opacity-95"
             style={{ transformOrigin: "top center" }}
           />
 
           {/* Laser 2: Hot Magenta */}
           <div
-            className="absolute -top-[50%] right-[20%] w-[12px] h-[250%] bg-gradient-to-b from-[#ff0055] via-white to-transparent shadow-[0_0_55px_#ff0055] animate-laser-sweep2 opacity-90"
+            className="absolute -top-[50%] right-[20%] w-[14px] h-[250%] bg-gradient-to-b from-[#ff0055] via-white to-transparent shadow-[0_0_65px_#ff0055] animate-laser-sweep2 opacity-95"
             style={{ transformOrigin: "top center" }}
           />
 
           {/* Laser 3: Acid Green Center */}
           <div
-            className="absolute -top-[50%] left-1/2 w-[8px] h-[250%] bg-gradient-to-b from-[#39ff14] via-white to-transparent shadow-[0_0_50px_#39ff14] animate-laser-sweep3 opacity-85"
+            className="absolute -top-[50%] left-1/2 w-[10px] h-[250%] bg-gradient-to-b from-[#39ff14] via-white to-transparent shadow-[0_0_60px_#39ff14] animate-laser-sweep3 opacity-90"
             style={{ transformOrigin: "top center" }}
           />
 
           {/* Laser 4: Solar Yellow Horizontal */}
-          <div className="absolute top-1/2 -left-[50%] w-[250%] h-[9px] bg-gradient-to-r from-[#ffee00] via-white to-transparent shadow-[0_0_45px_#ffee00] -rotate-12 opacity-85 animate-pulse" />
+          <div className="absolute top-1/2 -left-[50%] w-[250%] h-[11px] bg-gradient-to-r from-[#ffee00] via-white to-transparent shadow-[0_0_55px_#ffee00] -rotate-12 opacity-90 animate-pulse" />
 
           {/* Laser 5: Ultraviolet Diagonal */}
-          <div className="absolute top-1/3 -right-[50%] w-[250%] h-[8px] bg-gradient-to-l from-[#b026ff] via-white to-transparent shadow-[0_0_45px_#b026ff] rotate-15 opacity-85 animate-pulse" />
+          <div className="absolute top-1/3 -right-[50%] w-[250%] h-[10px] bg-gradient-to-l from-[#b026ff] via-white to-transparent shadow-[0_0_55px_#b026ff] rotate-15 opacity-90 animate-pulse" />
         </div>
 
-        {/* LAYER 6: HYPER-STROBE MULTI-COLOR BLINK LAYER */}
+        {/* LAYER 6: RAPID MULTI-COLOR HIGH-INTENSITY RAVE STROBE */}
         <div
-          className="absolute inset-0 pointer-events-none mix-blend-overlay animate-hyper-strobe"
+          className="absolute inset-0 pointer-events-none mix-blend-color-dodge animate-extreme-strobe z-20"
+        />
+
+        {/* LAYER 7: ULTRA-FAST OPTICAL BLINK OVERLAY */}
+        <div
+          className="absolute inset-0 pointer-events-none animate-ultra-blink mix-blend-difference z-20"
           style={{
             backgroundColor: strobeColor,
           }}
         />
 
-        {/* Instant White Strobe Shockwave Flash on Bass Drop / Beat */}
-        {flashOverlay && (
-          <div className="absolute inset-0 z-40 bg-white pointer-events-none mix-blend-difference animate-ping opacity-95" />
+        {/* LAYER 8: FULLSCREEN DYNAMIC AUDIO GLOW PULSE */}
+        <div
+          className="absolute inset-0 pointer-events-none mix-blend-screen transition-opacity duration-75 z-25"
+          style={{
+            background: `radial-gradient(circle at 50% 50%, ${strobeColor} 0%, transparent 75%)`,
+            opacity: 0.5 + bassEnergy * 0.45,
+            transform: `scale(${1.0 + bassEnergy * 0.25})`,
+          }}
+        />
+
+        {/* LAYER 9: SUDDEN EXPLOSIVE WHITE/DIFFERENCE SHOCKWAVE FLASH (ON BEAT & INITIAL TRANSITION) */}
+        {(flashOverlay || initialBlast) && (
+          <div className="absolute inset-0 z-40 bg-white pointer-events-none mix-blend-difference opacity-100 animate-ping" />
         )}
 
-        {/* LAYER 7: PERIMETER DANCING EQUALIZER BARS (TOP & BOTTOM) */}
+        {/* LAYER 10: PERIMETER DANCING EQUALIZER BARS (TOP & BOTTOM) */}
         {/* Top Equalizer */}
-        <div className="absolute top-0 inset-x-0 h-8 pointer-events-none flex items-start justify-between gap-1 px-1 z-30">
+        <div className="absolute top-0 inset-x-0 h-10 pointer-events-none flex items-start justify-between gap-1 px-1 z-30">
           {Array.from({ length: 48 }).map((_, i) => (
             <div
               key={i}
               className="flex-1 bg-gradient-to-b from-[#ff0055] via-[#00f0ff] to-transparent rounded-b-sm"
               style={{
-                height: `${Math.floor(25 + ((i % 8) * 8) + bassEnergy * 40)}%`,
-                transition: "height 0.08s ease",
+                height: `${Math.floor(25 + ((i % 8) * 9) + bassEnergy * 50)}%`,
+                transition: "height 0.06s ease",
               }}
             />
           ))}
         </div>
 
         {/* Bottom Equalizer */}
-        <div className="absolute bottom-0 inset-x-0 h-20 pointer-events-none flex items-end justify-between gap-1 px-1 z-30">
+        <div className="absolute bottom-0 inset-x-0 h-24 pointer-events-none flex items-end justify-between gap-1 px-1 z-30">
           {Array.from({ length: 48 }).map((_, i) => (
             <div
               key={i}
               className="flex-1 bg-gradient-to-t from-[#39ff14] via-[#00f0ff] to-[#ffee00] rounded-t-sm"
               style={{
-                height: `${Math.floor(20 + ((i % 12) * 5) + bassEnergy * 50)}%`,
-                transition: "height 0.08s ease",
+                height: `${Math.floor(20 + ((i % 12) * 6) + bassEnergy * 65)}%`,
+                transition: "height 0.06s ease",
               }}
             />
           ))}
         </div>
 
-        {/* LAYER 8: DJ RAVE HUD */}
+        {/* LAYER 11: DJ RAVE HUD */}
         {/* Top Left Slim Badge */}
         <div className="absolute top-4 left-4 z-30 pointer-events-none">
-          <div className="px-4 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-white/30 text-[10px] sm:text-xs font-mono font-bold tracking-widest uppercase text-white shadow-lg flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping inline-block" />
+          <div className="px-4 py-1.5 rounded-full bg-black/85 backdrop-blur-md border border-white/40 text-[10px] sm:text-xs font-mono font-bold tracking-widest uppercase text-white shadow-[0_0_15px_rgba(255,255,255,0.4)] flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping inline-block" />
             <span>{flashingTitle}</span>
           </div>
         </div>
 
         {/* Bottom Controls & Info */}
         <div className="absolute bottom-6 inset-x-4 flex flex-col items-center pointer-events-none text-center z-30 gap-2">
-          <div className="text-[11px] sm:text-xs font-mono text-[#00f0ff] font-bold tracking-[0.3em] uppercase bg-black/75 px-4 py-1 rounded-full border border-white/20">
+          <div className="text-[11px] sm:text-xs font-mono text-[#00f0ff] font-bold tracking-[0.3em] uppercase bg-black/80 px-4 py-1 rounded-full border border-white/30 shadow-[0_0_15px_#00f0ff]">
             {personal.name.toUpperCase()} // GRANDSTAND VIEW
           </div>
 
           {clickCount > 0 && (
-            <div className="text-[10px] sm:text-xs font-mono text-[#ff0055] font-black tracking-widest uppercase bg-black/90 border border-[#ff0055] px-4 py-1 rounded-full animate-bounce shadow-[0_0_20px_#ff0055]">
-              LIGHTING BOOSTED (x{clickCount}) — FULL LEVEL
+            <div className="text-[10px] sm:text-xs font-mono text-[#ff0055] font-black tracking-widest uppercase bg-black/95 border border-[#ff0055] px-4 py-1 rounded-full animate-bounce shadow-[0_0_30px_#ff0055]">
+              MAX LIGHTING OVERDRIVE (x{clickCount})
             </div>
           )}
 
-          <span className="text-[9px] sm:text-[10px] font-mono tracking-[0.3em] text-white/70 uppercase">
+          <span className="text-[9px] sm:text-[10px] font-mono tracking-[0.3em] text-white/80 uppercase">
             TAP ANYWHERE TO BOOST LIGHTING
           </span>
         </div>
@@ -397,7 +438,7 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
             e.stopPropagation();
             handleExit();
           }}
-          className="absolute top-4 right-4 z-50 px-4 py-1.5 bg-black/85 hover:bg-white hover:text-black text-white text-[10px] sm:text-[11px] font-mono tracking-widest uppercase rounded-full border border-white/30 backdrop-blur-md transition-all duration-200 cursor-pointer shadow-lg"
+          className="absolute top-4 right-4 z-50 px-4 py-1.5 bg-black/90 hover:bg-white hover:text-black text-white text-[10px] sm:text-[11px] font-mono tracking-widest uppercase rounded-full border border-white/40 backdrop-blur-md transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(0,0,0,0.8)]"
         >
           CLOSE [ESC]
         </button>
