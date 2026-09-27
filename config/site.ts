@@ -30,6 +30,8 @@ export interface SiteConfig {
     heroImage: string;
     profileImage: string;
     prankImage: string;
+    grandstandImage?: string;
+    videoPath?: string;
     audioPath: string;
     audioVolume: number;
     archiveGallery: ArchiveImage[];
@@ -113,6 +115,8 @@ export const siteConfig: SiteConfig = {
     heroImage: "/images/maruf-4.jpg",
     profileImage: "/images/maruf-2.jpg",
     prankImage: "/images/maruf-3.jpg", // Valley Horizon
+    grandstandImage: "/images/maruf-2.jpg", // Grandstand View
+    videoPath: "/video/cute-baby.mp4",
     audioPath: "/audio/prank.mp3",
     audioVolume: 1.0,
     archiveGallery: [
@@ -166,7 +170,7 @@ export const siteConfig: SiteConfig = {
       headingLine2: "Maruf",
       subtitle: "Moments, viewpoints, and personal photography from Jamalpur, Bangladesh.",
       buttonPrimary: "EXPLORE GALLERY",
-      buttonSecondary: "VALLEY HORIZON",
+      buttonSecondary: "DO NOT OPEN",
       scrollText: "SCROLL TO EXPLORE",
     },
 

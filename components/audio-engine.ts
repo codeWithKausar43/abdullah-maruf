@@ -15,6 +15,21 @@ class AudioExperienceEngine {
   private freqArray: Uint8Array = new Uint8Array(64);
   private lastBeatTime = 0;
 
+  public async prepare(): Promise<void> {
+    if (typeof window === "undefined") return;
+    try {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtx && !this.audioContext) {
+        this.audioContext = new AudioCtx();
+      }
+      if (this.audioContext && this.audioContext.state === "suspended") {
+        await this.audioContext.resume();
+      }
+    } catch (e) {
+      console.warn("AudioContext prepare error:", e);
+    }
+  }
+
   public initAudio(url: string, volume: number = 1.0) {
     if (typeof window === "undefined") return;
 
@@ -25,6 +40,11 @@ class AudioExperienceEngine {
       this.audioElement.crossOrigin = "anonymous";
       this.audioElement.volume = Math.min(1.0, Math.max(0.1, volume));
       this.audioElement.preload = "auto";
+      this.audioElement.onerror = () => {
+        if (this.audioElement && !this.audioElement.src.includes("prank-adio.mp3")) {
+          this.audioElement.src = "/audio/prank-adio.mp3";
+        }
+      };
     }
   }
 

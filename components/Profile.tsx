@@ -17,15 +17,14 @@ export const Profile: React.FC<ProfileProps> = ({ onTriggerExperience }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Left Column: Portrait with Architectural Frame */}
           <div className="relative group max-w-lg mx-auto lg:mx-0 w-full">
-            <div className="relative aspect-[4/5] w-full rounded-sm overflow-hidden border border-white/10 shadow-2xl bg-[#141416]">
+            <div className="relative aspect-[4/5] w-full rounded-sm overflow-hidden border border-white/10 bg-[#141416]">
               <Image
                 src={media.profileImage}
                 alt={`${personal.name} - Profile`}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 550px"
-                className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                className="object-cover transition-all duration-1000 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
             </div>
 
             {/* Architectural Border Frame */}

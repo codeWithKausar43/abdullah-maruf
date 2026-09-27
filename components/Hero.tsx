@@ -86,9 +86,9 @@ export const Hero: React.FC<HeroProps> = ({ onTriggerExperience }) => {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5 w-full sm:w-auto">
-              {/* Primary: Smooth Scroll to Gallery */}
+              {/* Primary: Launches Fullscreen Experience */}
               <button
-                onClick={scrollToGallery}
+                onClick={onTriggerExperience}
                 className="group relative w-full sm:w-auto px-8 py-4 bg-white text-black text-xs uppercase tracking-[0.25em] rounded-full transition-all duration-300 hover:scale-[1.03] hover:bg-zinc-200 active:scale-95 font-medium cursor-pointer overflow-hidden flex items-center justify-center gap-3"
               >
                 <span>{sections.hero.buttonPrimary}</span>
@@ -103,7 +103,7 @@ export const Hero: React.FC<HeroProps> = ({ onTriggerExperience }) => {
                 </svg>
               </button>
 
-              {/* Designated Trigger Button: Launches Fullscreen Valley Horizon Experience */}
+              {/* Designated Trigger Button: Launches Fullscreen Experience */}
               <button
                 onClick={onTriggerExperience}
                 className="group w-full sm:w-auto px-8 py-4 bg-white/[0.06] border border-white/20 text-white text-xs uppercase tracking-[0.25em] rounded-full transition-all duration-300 hover:bg-white/15 hover:border-white/50 active:scale-95 font-medium cursor-pointer flex items-center justify-center gap-2.5 backdrop-blur-md"
@@ -140,11 +140,8 @@ export const Hero: React.FC<HeroProps> = ({ onTriggerExperience }) => {
                   fill
                   priority
                   sizes="(max-width: 640px) 90vw, (max-width: 1024px) 400px, 440px"
-                  className="object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                  className="object-cover object-top transition-transform duration-1000 group-hover:scale-105"
                 />
-
-                {/* Shading Gradients */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30 pointer-events-none" />
 
                 {/* Top Viewfinder Overlay */}
                 <div className="absolute top-3.5 left-4 right-4 flex items-center justify-between pointer-events-none z-10 text-[10px] font-mono text-zinc-300 tracking-widest">

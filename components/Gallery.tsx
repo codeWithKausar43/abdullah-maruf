@@ -66,13 +66,13 @@ export const Gallery: React.FC<GalleryProps> = ({ onTriggerExperience }) => {
               className="group cursor-pointer flex flex-col w-full"
             >
               {/* Photo Card with Frame */}
-              <div className="relative aspect-[3/4] overflow-hidden rounded-sm mb-5 bg-[#141416] border border-white/10 shadow-lg">
+              <div className="relative aspect-[3/4] overflow-hidden rounded-sm mb-5 bg-[#141416] border border-white/10">
                 <Image
                   src={item.url}
                   alt={item.title}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 350px"
-                  className="object-cover object-center transition-transform duration-1000 group-hover:scale-105 filter contrast-105"
+                  className="object-cover object-center transition-transform duration-1000 group-hover:scale-105"
                 />
 
                 {/* Subtle Hover Veil */}

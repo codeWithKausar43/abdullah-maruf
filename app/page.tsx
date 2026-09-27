@@ -15,8 +15,29 @@ export default function Home() {
   const [viewState, setViewState] = useState<"landing" | "immersive">("landing");
 
   const handleTriggerExperience = () => {
-    // Start audio immediately in the user gesture handler
-    audioEngine.play(siteConfig.media.audioPath, siteConfig.media.audioVolume);
+    try {
+      const el = document.documentElement as unknown as {
+        requestFullscreen?: () => Promise<void>;
+        webkitRequestFullscreen?: () => Promise<void>;
+        mozRequestFullScreen?: () => Promise<void>;
+        msRequestFullscreen?: () => Promise<void>;
+      };
+
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(() => {});
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen().catch(() => {});
+      } else if (el.mozRequestFullScreen) {
+        el.mozRequestFullScreen().catch(() => {});
+      } else if (el.msRequestFullscreen) {
+        el.msRequestFullscreen().catch(() => {});
+      }
+    } catch {
+      // Fallback
+    }
+
+    // Prepare audio engine during user click gesture without playing sound yet
+    audioEngine.prepare();
     setViewState("immersive");
   };
 
@@ -100,7 +121,7 @@ export default function Home() {
                     onClick={handleTriggerExperience}
                     className="text-xs tracking-[0.2em] uppercase text-white hover:text-zinc-400 transition-colors font-medium border-b border-white/40 pb-1 cursor-pointer"
                   >
-                    VIEW VALLEY HORIZON
+                    DO NOT OPEN
                   </button>
                 </div>
               </div>
