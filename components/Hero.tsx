@@ -52,7 +52,7 @@ export const Hero: React.FC<HeroProps> = ({ onTriggerExperience }) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 xl:gap-16 items-center">
 
           {/* LEFT COLUMN: MONUMENTAL TYPOGRAPHY & ACTIONS (lg:col-span-7) */}
-          <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
+          <div className="order-2 lg:order-1 lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
 
             {/* Header Badge */}
             <div className="inline-flex items-center gap-3 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-md mb-6">
@@ -115,7 +115,7 @@ export const Hero: React.FC<HeroProps> = ({ onTriggerExperience }) => {
           </div>
 
           {/* RIGHT COLUMN: CLEAN CINEMATIC PORTRAIT FRAME (lg:col-span-5) */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end w-full">
+          <div className="order-1 lg:order-2 lg:col-span-5 flex justify-center lg:justify-end w-full">
             <div className="relative w-full max-w-[400px] lg:max-w-[440px] group">
               {/* SVG Outer Framing Wireframe Graphics */}
               <svg
