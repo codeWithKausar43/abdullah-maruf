@@ -6,10 +6,10 @@ import { siteConfig } from "@/config/site";
 import { audioEngine } from "./audio-engine";
 
 interface ImmersiveExperienceProps {
-  onExit: () => void;
+  onExit?: () => void;
 }
 
-export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit }) => {
+export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = () => {
   const { media, personal } = siteConfig;
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -61,13 +61,42 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
     }
   }, []);
 
-  // Request fullscreen if supported on user interaction
+  // Request fullscreen if supported on user interaction & prevent exit
   useEffect(() => {
     requestFs();
 
     // Prevent background scrolling
     const origOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
+    // Block ESC key from exiting or stopping
+    const preventEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || e.keyCode === 27) {
+        e.preventDefault();
+        e.stopPropagation();
+        requestFs();
+      }
+    };
+    window.addEventListener("keydown", preventEsc, { capture: true });
+
+    // Block back button navigation (popstate trap)
+    window.history.pushState(null, "", window.location.href);
+    const handlePopState = (e: PopStateEvent) => {
+      e.preventDefault();
+      window.history.pushState(null, "", window.location.href);
+      requestFs();
+    };
+    window.addEventListener("popstate", handlePopState);
+
+    // Re-request fullscreen if browser exits
+    const handleFsChange = () => {
+      const doc = document as any;
+      if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
+        requestFs();
+      }
+    };
+    document.addEventListener("fullscreenchange", handleFsChange);
+    document.addEventListener("webkitfullscreenchange", handleFsChange);
 
     // Preload Grandstand View image into memory for zero latency transition
     const grandstandImg = new window.Image();
@@ -76,31 +105,14 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
     // Pre-initialize main audio stream (without playing)
     audioEngine.initAudio(media.audioPath, media.audioVolume ?? 1.0);
 
-    // ESC key handler for clean exit
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        handleExit();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = origOverflow;
+      window.removeEventListener("keydown", preventEsc, { capture: true });
+      window.removeEventListener("popstate", handlePopState);
+      document.removeEventListener("fullscreenchange", handleFsChange);
+      document.removeEventListener("webkitfullscreenchange", handleFsChange);
     };
   }, [media.audioPath, media.audioVolume, media.grandstandImage, requestFs]);
-
-  // Clean exit handler
-  const handleExit = useCallback(() => {
-    if (videoRef.current) {
-      videoRef.current.pause();
-    }
-    audioEngine.stop();
-    if (document.fullscreenElement) {
-      document.exitFullscreen().catch(() => {});
-    }
-    onExit();
-  }, [onExit]);
 
   // Start video playback as soon as mounted: COMPLETELY MUTED
   useEffect(() => {
@@ -228,6 +240,7 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
     <div
       ref={containerRef}
       onClick={triggerClickFX}
+      onContextMenu={(e) => e.preventDefault()}
       className={`fixed inset-0 z-[999999] w-screen h-screen bg-black overflow-hidden select-none cursor-pointer ${
         flashOverlay ? "screen-click-shock" : ""
       } ${initialBlast || isBeatActive ? "animate-screen-vibrate" : ""}`}
@@ -246,15 +259,19 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
       {/* STAGE 1: FULLSCREEN VIDEO PLAYER (COMPLETELY MUTED)                */}
       {/* ================================================================= */}
       {stage === "video" && (
-        <div className="absolute inset-0 z-50 w-full h-full bg-black flex items-center justify-center">
+        <div className="absolute inset-0 z-50 w-full h-full bg-black flex items-center justify-center pointer-events-none">
           <video
             ref={videoRef}
             autoPlay
             playsInline
             muted
+            disablePictureInPicture
+            controls={false}
+            controlsList="nodownload nofullscreen noremoteplayback"
+            onContextMenu={(e) => e.preventDefault()}
             onEnded={handleVideoEnd}
             onError={handleVideoError}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain pointer-events-none"
             src="/video/cute-baby.mp4"
           >
             <source src="/video/cute-baby.mp4" type="video/mp4" />
@@ -263,17 +280,6 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
               type="video/mp4"
             />
           </video>
-
-          {/* Clean Exit Control Button in Top-Right */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleExit();
-            }}
-            className="absolute top-4 right-4 z-[60] px-4 py-1.5 bg-black/80 hover:bg-white hover:text-black text-white text-[10px] sm:text-[11px] font-mono tracking-widest uppercase rounded-full border border-white/30 backdrop-blur-md transition-all duration-200 cursor-pointer shadow-lg"
-          >
-            CLOSE [ESC]
-          </button>
         </div>
       )}
 
@@ -447,17 +453,6 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
             TAP ANYWHERE TO BOOST LIGHTING
           </span>
         </div>
-
-        {/* Clean Exit Control Button in Top-Right */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleExit();
-          }}
-          className="absolute top-4 right-4 z-50 px-4 py-1.5 bg-black/90 hover:bg-white hover:text-black text-white text-[10px] sm:text-[11px] font-mono tracking-widest uppercase rounded-full border border-white/40 backdrop-blur-md transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(0,0,0,0.8)]"
-        >
-          CLOSE [ESC]
-        </button>
       </div>
     </div>
   );
