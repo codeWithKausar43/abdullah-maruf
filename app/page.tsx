@@ -16,21 +16,23 @@ export default function Home() {
 
   const handleTriggerExperience = () => {
     try {
-      const el = document.documentElement as unknown as {
-        requestFullscreen?: () => Promise<void>;
-        webkitRequestFullscreen?: () => Promise<void>;
-        mozRequestFullScreen?: () => Promise<void>;
-        msRequestFullscreen?: () => Promise<void>;
-      };
+      const el = document.documentElement as any;
+      const doc = document as any;
 
-      if (el.requestFullscreen) {
-        el.requestFullscreen().catch(() => {});
-      } else if (el.webkitRequestFullscreen) {
-        el.webkitRequestFullscreen().catch(() => {});
-      } else if (el.mozRequestFullScreen) {
-        el.mozRequestFullScreen().catch(() => {});
-      } else if (el.msRequestFullscreen) {
-        el.msRequestFullscreen().catch(() => {});
+      if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
+        if (el.requestFullscreen) {
+          el.requestFullscreen({ navigationUI: "hide" }).catch(() => {
+            if (document.body.requestFullscreen) {
+              document.body.requestFullscreen({ navigationUI: "hide" }).catch(() => {});
+            }
+          });
+        } else if (el.webkitRequestFullscreen) {
+          el.webkitRequestFullscreen();
+        } else if (el.mozRequestFullScreen) {
+          el.mozRequestFullScreen();
+        } else if (el.msRequestFullscreen) {
+          el.msRequestFullscreen();
+        }
       }
     } catch {
       // Fallback

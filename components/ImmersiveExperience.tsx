@@ -41,22 +41,19 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
   // Helper to maintain fullscreen mode inside the immersive state
   const requestFs = useCallback(async () => {
     try {
-      const el = document.documentElement as unknown as {
-        requestFullscreen?: () => Promise<void>;
-        webkitRequestFullscreen?: () => Promise<void>;
-        mozRequestFullScreen?: () => Promise<void>;
-        msRequestFullscreen?: () => Promise<void>;
-      };
-
-      if (!document.fullscreenElement) {
+      const doc = document as any;
+      if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
+        const el = (containerRef.current || document.documentElement) as any;
         if (el.requestFullscreen) {
-          await el.requestFullscreen();
+          await el.requestFullscreen({ navigationUI: "hide" });
         } else if (el.webkitRequestFullscreen) {
           await el.webkitRequestFullscreen();
         } else if (el.mozRequestFullScreen) {
           await el.mozRequestFullScreen();
         } else if (el.msRequestFullscreen) {
           await el.msRequestFullscreen();
+        } else if (document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen({ navigationUI: "hide" });
         }
       }
     } catch {
@@ -116,6 +113,16 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
         playPromise.catch((err) => {
           console.warn("Autoplay attempt:", err);
         });
+      }
+
+      // iOS Safari native fullscreen fallback to guarantee hidden address bar
+      const anyVid = videoRef.current as any;
+      if (anyVid.webkitEnterFullscreen && !document.fullscreenElement) {
+        try {
+          anyVid.webkitEnterFullscreen();
+        } catch {
+          // Handled gracefully
+        }
       }
     }
   }, [stage]);
@@ -192,6 +199,9 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
 
   // Click shockwave and bass impact during showcase
   const triggerClickFX = () => {
+    // Re-assert fullscreen to hide URL/navigation bar
+    requestFs();
+
     if (stage === "video") {
       // If video was blocked or paused, click starts it
       if (videoRef.current && videoRef.current.paused) {
@@ -218,12 +228,18 @@ export const ImmersiveExperience: React.FC<ImmersiveExperienceProps> = ({ onExit
     <div
       ref={containerRef}
       onClick={triggerClickFX}
-      className={`fixed inset-0 z-[99999] w-screen h-screen bg-black overflow-hidden select-none cursor-pointer ${
+      className={`fixed inset-0 z-[999999] w-screen h-screen bg-black overflow-hidden select-none cursor-pointer ${
         flashOverlay ? "screen-click-shock" : ""
       } ${initialBlast || isBeatActive ? "animate-screen-vibrate" : ""}`}
       style={{
         width: "100vw",
         height: "100dvh",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 999999,
       }}
     >
       {/* ================================================================= */}

@@ -281,3 +281,15 @@
 .animate-screen-vibrate {
   animation: screenVibrate 0.18s infinite ease-in-out;
 }
+
+/* Fullscreen API UI Reset */
+:fullscreen,
+::backdrop,
+:-webkit-full-screen {
+  background-color: #000000 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
