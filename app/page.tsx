@@ -1,69 +1,151 @@
-import Image from "next/image";
+"use client";
+
+import React, { useState } from "react";
+import { Navbar } from "@/components/Navbar";
+import { Hero } from "@/components/Hero";
+import { Profile } from "@/components/Profile";
+import { Gallery } from "@/components/Gallery";
+import { MysterySection } from "@/components/MysterySection";
+import { InteractiveSection } from "@/components/InteractiveSection";
+import { FinalReveal } from "@/components/FinalReveal";
+import { ImmersiveExperience } from "@/components/ImmersiveExperience";
+import { Aftermath } from "@/components/Aftermath";
+import { siteConfig } from "@/config/site";
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+  const [viewState, setViewState] = useState<"landing" | "immersive" | "aftermath">("landing");
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleTriggerExperience = () => {
+    setViewState("immersive");
+  };
+
+  const handleExitExperience = () => {
+    setViewState("aftermath");
+  };
+
+  const handleReturnToSite = () => {
+    setViewState("landing");
+  };
+
+  if (!mounted) {
+    return <main className="min-h-screen bg-[#0a0a0a]" />;
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="min-h-screen bg-[#0a0a0a] text-[#ededed] relative">
+      {/* 1. Contemporary Luxury Landing Page State */}
+      {viewState === "landing" && (
+        <div className="w-full flex flex-col">
+          {/* Top Luxury Navbar */}
+          <Navbar onTriggerExperience={handleTriggerExperience} />
+
+          {/* Section 1: Hero */}
+          <Hero onTriggerExperience={handleTriggerExperience} />
+
+          {/* Section 2: Selected Works / Curated Gallery */}
+          <Gallery onTriggerExperience={handleTriggerExperience} />
+
+          {/* Section 3: Profile & Identity Monograph */}
+          <Profile onTriggerExperience={handleTriggerExperience} />
+
+          {/* Section 4: The Mystery / Curatorial Warning */}
+          <MysterySection onTriggerExperience={handleTriggerExperience} />
+
+          {/* Section 5: Experimental Harmonic Calibrator */}
+          <InteractiveSection onTriggerExperience={handleTriggerExperience} />
+
+          {/* Section 6: Final Climax / Resonance Point */}
+          <FinalReveal onTriggerExperience={handleTriggerExperience} />
+
+          {/* High-End KEXART Style Client Footer (Max-Width 1400px, NO EMOJIS, NO ICONS) */}
+          <footer className="w-full bg-[#070709] border-t border-white/5 py-20">
+            <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 pb-16 border-b border-white/5">
+                {/* Brand Column */}
+                <div className="lg:col-span-2 pr-4">
+                  <a href="#home" className="inline-block mb-6">
+                    <span className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                      {siteConfig.personal.name.toUpperCase()}
+                    </span>
+                  </a>
+                  <p className="text-zinc-400 max-w-sm text-sm font-light leading-relaxed mb-6">
+                    {siteConfig.personal.statement}
+                  </p>
+                  <p className="text-[11px] tracking-[0.2em] uppercase text-zinc-500 font-mono">
+                    ORIGIN: <span className="text-zinc-300">{siteConfig.personal.location}</span>
+                  </p>
+                </div>
+
+                {/* Navigation Index */}
+                <div>
+                  <h3 className="text-xs tracking-[0.25em] uppercase text-zinc-500 mb-6 font-medium">
+                    EXPLORE
+                  </h3>
+                  <ul className="space-y-3">
+                    {siteConfig.navigation.map((item, idx) => (
+                      <li key={idx}>
+                        <a
+                          href={item.href}
+                          className="text-sm text-zinc-400 hover:text-white transition-colors duration-300 font-light"
+                        >
+                          {item.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Identity Intel & Trigger */}
+                <div>
+                  <h3 className="text-xs tracking-[0.25em] uppercase text-zinc-500 mb-6 font-medium">
+                    ARCHIVE INTEL
+                  </h3>
+                  <p className="text-xs text-zinc-400 font-light leading-relaxed mb-4">
+                    Inception: {siteConfig.personal.birthDate}
+                  </p>
+                  <p className="text-xs text-zinc-400 font-light leading-relaxed mb-6">
+                    Status: {siteConfig.personal.relationshipStatus}
+                  </p>
+                  <button
+                    onClick={handleTriggerExperience}
+                    className="text-xs tracking-[0.2em] uppercase text-white hover:text-zinc-400 transition-colors font-medium border-b border-white/40 pb-1 cursor-pointer"
+                  >
+                    ACCESS SENSORY ARCHIVE
+                  </button>
+                </div>
+              </div>
+
+              {/* Bottom Line */}
+              <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 font-light gap-4">
+                <p>
+                  (C) {new Date().getFullYear()} {siteConfig.personal.name}. All rights reserved.
+                </p>
+                <p className="text-[11px] tracking-[0.2em] uppercase">
+                  CONTEMPORARY VISUAL MONOGRAPH
+                </p>
+              </div>
+            </div>
+          </footer>
+        </div>
+      )}
+
+      {/* 2. Fullscreen Surprise Party Mode */}
+      {viewState === "immersive" && (
+        <ImmersiveExperience onExit={handleExitExperience} />
+      )}
+
+      {/* 3. Post-Experience Aftermath State */}
+      {viewState === "aftermath" && (
+        <Aftermath
+          onReenter={handleTriggerExperience}
+          onReturnToSite={handleReturnToSite}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      )}
+    </main>
   );
 }
